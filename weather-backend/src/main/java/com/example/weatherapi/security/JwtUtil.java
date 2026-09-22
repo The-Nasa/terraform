@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+
 @Component
 public class JwtUtil {
     // Secret key for testing purposes
@@ -24,6 +25,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

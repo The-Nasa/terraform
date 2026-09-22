@@ -25,12 +25,19 @@ jobs:
         working-directory: weather-backend
         run: mvn clean package -DskipTests
 
+      - name: Prepare SSH key
+        run: |
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.EC2_SSH_KEY }}" | sed 's/\\n/\n/g' > ~/.ssh/ec2_key
+          test -s ~/.ssh/ec2_key
+
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key_path: ~/.ssh/ec2_key
           source: "weather-backend/target/weather-api-0.0.1-SNAPSHOT.jar"
           target: "/home/ec2-user/"
           strip_components: 2
@@ -40,7 +47,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key_path: ~/.ssh/ec2_key
           script: |
             sudo systemctl restart backend
             sudo systemctl status backend --no-pager

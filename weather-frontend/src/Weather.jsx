@@ -20,7 +20,7 @@ export default function Weather({ onLogout }) {
     const token = localStorage.getItem('jwt_token');
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/weather?location=${location}`, {
+      const response = await fetch(`http://${window.location.hostname}:8080/api/v1/weather?location=${location}`, {
         method: 'GET',
         headers: { 
           'Authorization': `Bearer ${token}` 

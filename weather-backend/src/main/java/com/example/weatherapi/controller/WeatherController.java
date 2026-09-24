@@ -1,6 +1,7 @@
 package com.example.weatherapi.controller;
 
 import com.example.weatherapi.dto.WeatherResponse;
+import com.example.weatherapi.service.WeatherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,24 +9,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/weather")
 public class WeatherController {
 
+    private final WeatherService weatherService;
+
+    public WeatherController(WeatherService weatherService) {
+        this.weatherService = weatherService;
+    }
+
     @GetMapping
     public ResponseEntity<WeatherResponse> getWeather(@RequestParam String location) {
-        // Mock data logic based on location
-        String temp = "24°C";
-        String condition = "Despejado";
-        String humidity = "60%";
-
-        if (location.equalsIgnoreCase("Tingo Maria")) {
-            temp = "28°C";
-            condition = "Lluvioso";
-            humidity = "85%";
-        } else if (location.equalsIgnoreCase("Huanuco")) {
-            temp = "22°C";
-            condition = "Mayormente soleado";
-            humidity = "55%";
-        }
-
-        WeatherResponse response = new WeatherResponse(location, temp, condition, humidity);
+        WeatherResponse response = weatherService.getWeatherForLocation(location);
         return ResponseEntity.ok(response);
     }
 }
